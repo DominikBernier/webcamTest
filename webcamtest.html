@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Capture (ES5)</title>
+</head>
+<body>
+
+    <video id="webcam" autoplay style="width: 320px; height: 240px; display: none;"></video>
+    <button id="startCam">Start Webcam</button>
+    <button id="capture">Capture Image</button>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <img id="capturedImage" style="width: 320px; height: 240px; display: none;" />
+
+    <script>
+        (function () {
+            var video = document.getElementById("webcam");
+            var canvas = document.getElementById("canvas");
+            var img = document.getElementById("capturedImage");
+            var startButton = document.getElementById("startCam");
+            var captureButton = document.getElementById("capture");
+
+            var constraints = { video: true };
+            var stream = null;
+
+            function startWebcam() {
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia(constraints).then(function (mediaStream) {
+                        stream = mediaStream;
+                        video.srcObject = stream;
+                        video.style.display = "block"; // Show video
+                    }).catch(function (err) {
+                        alert("Error accessing webcam: " + err);
+                    });
+                } else {
+                    alert("Your browser does not support webcam access.");
+                }
+            }
+
+            function captureImage() {
+                if (!stream) {
+                    alert("Please start the webcam first.");
+                    return;
+                }
+                var context = canvas.getContext("2d");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                
+                // Convert canvas to image
+                img.src = canvas.toDataURL("image/png");
+                img.style.display = "block"; // Show captured image
+            }
+
+            startButton.onclick = startWebcam;
+            captureButton.onclick = captureImage;
+
+        })();
+    </script>
+
+</body>
+</html>
+
+
+path: \\Client\C$\Users\UserName\Downloads
